@@ -78,36 +78,36 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#20242B] to-[#2c323c] rounded-3xl p-6 md:p-8 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2 relative z-10">
+      <div className="bg-gradient-to-r from-[#20242B] to-[#2c323c] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        <div className="space-y-2 relative z-10 min-w-0">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#D99A55] text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Atelier {displayName} · Synchronisé</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
             Bonjour, {displayName}
           </h2>
-          <p className="text-sm text-zinc-300 max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-300 max-w-xl leading-relaxed">
             Votre palette contient actuellement <strong className="text-white">{totalColors} couleur{totalColors > 1 ? 's' : ''}</strong> et{' '}
             <strong className="text-white">{totalRecipes} recette{totalRecipes > 1 ? 's' : ''} de mélanges</strong> stockées dans votre espace d&apos;artiste.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 relative z-10 shrink-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 relative z-10 shrink-0 w-full md:w-auto">
           <Button
             variant="outline"
             onClick={refreshDashboard}
             disabled={loading}
-            className="border-white/20 bg-white/10 text-white hover:bg-white/20 text-xs"
+            className="border-white/20 bg-white/10 text-white hover:bg-white/20 text-xs w-full sm:w-auto justify-center"
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
             Synchroniser
           </Button>
 
-          <Button asChild size="lg" className="bg-[#D99A55] hover:bg-[#C4873D] text-white font-medium shadow-sm">
-            <Link href="/dashboard/studio" className="flex items-center gap-2">
+          <Button asChild size="default" className="bg-[#D99A55] hover:bg-[#C4873D] text-white font-medium shadow-sm w-full sm:w-auto justify-center">
+            <Link href="/dashboard/studio" className="flex items-center gap-2 justify-center">
               <Pipette className="w-4 h-4" />
               <span>Lancer le Color Studio</span>
             </Link>
@@ -116,81 +116,82 @@ export default function DashboardPage() {
       </div>
 
       {/* KPI Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
         <Card className="border border-[#E5E3DC] bg-white shadow-xs hover:border-[#D99A55]/40 transition-colors">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Couleurs de l&apos;Atelier
+          <CardContent className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-500 line-clamp-1">
+                Couleurs
               </span>
-              <div className="w-8 h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center">
-                <Palette className="w-4 h-4 text-[#D99A55]" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center shrink-0">
+                <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D99A55]" />
               </div>
             </div>
-            <div className="text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalColors}</div>
-            <p className="text-xs text-zinc-500 mt-1">Nuance{totalColors > 1 ? 's' : ''} archivée{totalColors > 1 ? 's' : ''}</p>
+            <div className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalColors}</div>
+            <p className="text-[10px] sm:text-xs text-zinc-500 mt-1 truncate">Nuance{totalColors > 1 ? 's' : ''} archivée{totalColors > 1 ? 's' : ''}</p>
           </CardContent>
         </Card>
 
         <Card className="border border-[#E5E3DC] bg-white shadow-xs hover:border-[#D99A55]/40 transition-colors">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Carnet de Recettes
+          <CardContent className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-500 line-clamp-1">
+                Recettes
               </span>
-              <div className="w-8 h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-[#D99A55]" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center shrink-0">
+                <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D99A55]" />
               </div>
             </div>
-            <div className="text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalRecipes}</div>
-            <p className="text-xs text-zinc-500 mt-1">Mélange{totalRecipes > 1 ? 's' : ''} dosé{totalRecipes > 1 ? 's' : ''}</p>
+            <div className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalRecipes}</div>
+            <p className="text-[10px] sm:text-xs text-zinc-500 mt-1 truncate">Mélange{totalRecipes > 1 ? 's' : ''} dosé{totalRecipes > 1 ? 's' : ''}</p>
           </CardContent>
         </Card>
 
         <Card className="border border-[#E5E3DC] bg-white shadow-xs hover:border-[#D99A55]/40 transition-colors">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Scans Similés
+          <CardContent className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-500 line-clamp-1">
+                Scans
               </span>
-              <div className="w-8 h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center">
-                <Scan className="w-4 h-4 text-[#D99A55]" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center shrink-0">
+                <Scan className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D99A55]" />
               </div>
             </div>
-            <div className="text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalScans}</div>
-            <p className="text-xs text-zinc-500 mt-1">Capture{totalScans > 1 ? 's' : ''} optique{totalScans > 1 ? 's' : ''}</p>
+            <div className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalScans}</div>
+            <p className="text-[10px] sm:text-xs text-zinc-500 mt-1 truncate">Capture{totalScans > 1 ? 's' : ''} optique{totalScans > 1 ? 's' : ''}</p>
           </CardContent>
         </Card>
 
         <Card className="border border-[#E5E3DC] bg-white shadow-xs hover:border-[#D99A55]/40 transition-colors">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Coups de Cœur
+          <CardContent className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-500 line-clamp-1">
+                Favoris
               </span>
-              <div className="w-8 h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center">
-                <Bookmark className="w-4 h-4 text-[#D99A55]" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-zinc-100 text-[#20242B] flex items-center justify-center shrink-0">
+                <Bookmark className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D99A55]" />
               </div>
             </div>
-            <div className="text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalFavorites}</div>
-            <p className="text-xs text-zinc-500 mt-1">Couleur{totalFavorites > 1 ? 's' : ''} favorite{totalFavorites > 1 ? 's' : ''}</p>
+            <div className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#20242B]">{totalFavorites}</div>
+            <p className="text-[10px] sm:text-xs text-zinc-500 mt-1 truncate">Couleur{totalFavorites > 1 ? 's' : ''} favorite{totalFavorites > 1 ? 's' : ''}</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Grid: Recent Colors & Activities */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Left Column: Recent Colors */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold text-[#20242B]">Dernières Couleurs Enregistrées</h3>
+              <h3 className="text-base sm:text-lg font-bold text-[#20242B]">Dernières Couleurs Enregistrées</h3>
               <p className="text-xs text-zinc-500">Nuances enregistrées dans votre atelier</p>
             </div>
             {colors.length > 0 && (
               <Button asChild variant="ghost" size="sm" className="text-xs text-[#D99A55] hover:text-[#C4873D]">
                 <Link href="/dashboard/colors" className="flex items-center gap-1">
-                  <span>Voir toutes les couleurs</span>
+                  <span className="hidden sm:inline">Voir toutes les couleurs</span>
+                  <span className="sm:hidden">Voir tout</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </Button>
@@ -216,7 +217,7 @@ export default function DashboardPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4">
               {colors.slice(0, 6).map((color) => {
                 const contrast = getContrastColor(color.hex)
                 const isCopied = copiedHex === color.hex

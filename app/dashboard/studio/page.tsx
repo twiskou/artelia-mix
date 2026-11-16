@@ -338,27 +338,29 @@ export default function ColorStudioPage() {
             <button
               type="button"
               onClick={() => setStudioMode('palette')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-2 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 studioMode === 'palette'
                   ? 'bg-white text-[#20242B] shadow-xs'
                   : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
-              <Cpu className={`w-3.5 h-3.5 ${studioMode === 'palette' ? 'text-teal-600' : ''}`} />
-              <span>Palette Intelligente (Capteur)</span>
+              <Cpu className={`w-3.5 h-3.5 shrink-0 ${studioMode === 'palette' ? 'text-teal-600' : ''}`} />
+              <span className="hidden sm:inline">Palette Intelligente (Capteur)</span>
+              <span className="sm:hidden">Palette Capteur</span>
             </button>
 
             <button
               type="button"
               onClick={() => setStudioMode('digital')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-2 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 studioMode === 'digital'
                   ? 'bg-white text-[#20242B] shadow-xs'
                   : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
-              <Sliders className={`w-3.5 h-3.5 ${studioMode === 'digital' ? 'text-[#D99A55]' : ''}`} />
-              <span>Ajustement Numérique (RGB)</span>
+              <Sliders className={`w-3.5 h-3.5 shrink-0 ${studioMode === 'digital' ? 'text-[#D99A55]' : ''}`} />
+              <span className="hidden sm:inline">Ajustement Numérique (RGB)</span>
+              <span className="sm:hidden">Sliders RGB</span>
             </button>
           </div>
 
