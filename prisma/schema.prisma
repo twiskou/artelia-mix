@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String
+  avatar       String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  colors       Color[]
+  recipes      Recipe[]
+  scans        Scan[]
+  activities   Activity[]
+}
+
+model Color {
+  id          String     @id @default(cuid())
+  userId      String
+  name        String
+  hex         String
+  red         Int
+  green       Int
+  blue        Int
+  category    String     @default("Autre")
+  description String?
+  notes       String?
+  isFavorite  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipes     Recipe[]
+  scans       Scan[]
+  activities  Activity[]
+}
+
+model Recipe {
+  id           String             @id @default(cuid())
+  userId       String
+  colorId      String
+  name         String
+  instructions String?
+  notes        String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  color        Color              @relation(fields: [colorId], references: [id], onDelete: Cascade)
+  ingredients  RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  id        String   @id @default(cuid())
+  recipeId  String
+  paintName String
+  quantity  Float
+  unit      String   @default("%")
+  order     Int      @default(0)
+
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model Scan {
+  id          String   @id @default(cuid())
+  userId      String
+  colorId     String?
+  hex         String
+  red         Int
+  green       Int
+  blue        Int
+  isSimulated Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  color       Color?   @relation(fields: [colorId], references: [id], onDelete: SetNull)
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  colorId     String?
+  type        String   // color_saved, recipe_created, scan_performed, etc.
+  description String
+  colorHex    String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  color       Color?   @relation(fields: [colorId], references: [id], onDelete: SetNull)
+}
+
