@@ -12,17 +12,28 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isHydrating } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Attendre la fin de l'hydratation localStorage avant de rediriger
+    if (!isHydrating && !isAuthenticated) {
       router.replace('/login')
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isHydrating, router])
 
-  // Always render children so Next.js instant-navigation validation
-  // can see the segment. The redirect fires via useEffect above.
+  // Pendant l'hydratation, afficher un spinner neutre
+  if (isHydrating) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#F7F6F2]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-[#C8853A] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-zinc-400">Chargement de l&apos;atelier...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <NavProvider>
       <div className="flex h-screen w-full bg-[#F7F6F2] text-[#252525] overflow-hidden">

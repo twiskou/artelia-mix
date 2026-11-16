@@ -7,6 +7,7 @@ import { validateCredentials, createUser } from '@/lib/users-store'
 const STORAGE_KEY = 'artelia_auth'
 
 type AuthContextValue = AuthState & {
+  isHydrating: boolean
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
@@ -16,6 +17,8 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({ user: null, isAuthenticated: false })
+  // isHydrating = true tant que localStorage n'a pas été lu
+  const [isHydrating, setIsHydrating] = useState(true)
 
   // Restaure la session depuis localStorage au démarrage
   useEffect(() => {
@@ -29,6 +32,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {
       // ignore
+    } finally {
+      setIsHydrating(false)
     }
   }, [])
 
@@ -102,7 +107,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return React.createElement(
     AuthContext.Provider,
-    { value: { ...state, login, register, logout } },
+    { value: { ...state, isHydrating, login, register, logout } },
     children
   )
 }
