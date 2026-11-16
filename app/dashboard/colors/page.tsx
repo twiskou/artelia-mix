@@ -30,6 +30,7 @@ import {
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog'
+import { ReverseRecipeModal } from '@/components/studio/ReverseRecipeModal'
 import { DEMO_COLORS } from '@/lib/data'
 import { Color } from '@/lib/types'
 import { getContrastColor, formatDate } from '@/lib/utils'
@@ -47,6 +48,7 @@ export default function ColorsPage() {
   const [onlyFavorites, setOnlyFavorites] = useState(false)
   const [copiedHex, setCopiedHex] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<Color | null>(null)
+  const [recipeModalColor, setRecipeModalColor] = useState<Color | null>(null)
 
   // Load colors for current user
   async function loadColors() {
@@ -289,8 +291,19 @@ export default function ColorsPage() {
                     <p className="font-mono text-[11px] text-zinc-500 uppercase mt-0.5">{color.hex}</p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-[10px] text-zinc-400">
-                    <span>rgb({color.red},{color.green},{color.blue})</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-[10px]">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setRecipeModalColor(color)
+                      }}
+                      className="px-2 py-0.5 rounded-md bg-[#D99A55]/15 text-[#C4873D] hover:bg-[#D99A55] hover:text-white transition-all font-bold flex items-center gap-1"
+                      title="Reconstituer cette couleur avec vos tubes"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>Recette</span>
+                    </button>
                     <button
                       onClick={(e) => handleCopyHex(e, color.hex)}
                       className="p-1 rounded text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors"
@@ -393,7 +406,7 @@ export default function ColorsPage() {
               </div>
             </div>
 
-            <DialogFooter className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between sm:justify-between">
+            <DialogFooter className="p-4 bg-zinc-50 border-t border-zinc-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
               <Button
                 variant="destructive"
                 size="sm"
@@ -401,20 +414,44 @@ export default function ColorsPage() {
                 className="text-xs"
               >
                 <Trash2 className="w-3.5 h-3.5 mr-1" />
-                Supprimer du nuancier
+                Supprimer
               </Button>
 
-              <Button
-                size="sm"
-                onClick={() => setSelectedColor(null)}
-                className="bg-[#20242B] hover:bg-[#20242B]/90 text-white text-xs"
-              >
-                Fermer
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => setSelectedColor(null)}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  Fermer
+                </Button>
+
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    const target = selectedColor
+                    setSelectedColor(null)
+                    setRecipeModalColor(target)
+                  }}
+                  className="bg-[#D99A55] hover:bg-[#C4873D] text-white text-xs font-bold shadow-xs flex items-center gap-1.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Calculer la recette avec mes tubes
+                </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         )}
       </Dialog>
+
+      {/* Reverse Recipe Calculator Modal */}
+      <ReverseRecipeModal
+        isOpen={!!recipeModalColor}
+        onClose={() => setRecipeModalColor(null)}
+        targetColor={recipeModalColor}
+        savedColors={colors}
+      />
     </div>
   )
 }

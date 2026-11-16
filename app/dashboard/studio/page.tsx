@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Pipette,
   Scan,
@@ -40,6 +40,8 @@ import {
   MeasuredColorData,
   PigmentProportions,
 } from '@/components/studio/SmartPaletteSimulator'
+import { ReverseRecipeCalculator } from '@/components/studio/ReverseRecipeCalculator'
+import { ReverseRecipeModal } from '@/components/studio/ReverseRecipeModal'
 
 const COLOR_CATEGORIES = [
   'Rouge',
@@ -55,8 +57,25 @@ const COLOR_CATEGORIES = [
 ]
 
 export default function ColorStudioPage() {
-  // Studio interaction mode: physical smart palette simulator or digital sliders
-  const [studioMode, setStudioMode] = useState<'palette' | 'digital'>('palette')
+  // Studio interaction mode: automated reverse recipe, physical smart palette simulator or digital sliders
+  const [studioMode, setStudioMode] = useState<'reverse' | 'palette' | 'digital'>('reverse')
+  const [savedColors, setSavedColors] = useState<Color[]>([])
+  const [isReverseModalOpen, setIsReverseModalOpen] = useState(false)
+
+  // Load saved colors from library
+  useEffect(() => {
+    async function loadColors() {
+      try {
+        const list = await api.getColors()
+        if (list && list.length > 0) {
+          setSavedColors(list)
+        }
+      } catch {
+        // ignore
+      }
+    }
+    loadColors()
+  }, [])
 
   // Current active color state (initial default matching Red 4 + Yellow 8)
   const [hex, setHex] = useState('#FFAE0D')
@@ -317,13 +336,22 @@ export default function ColorStudioPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button
+            onClick={() => setIsReverseModalOpen(true)}
+            className="bg-[#D99A55] hover:bg-[#C4873D] text-white shadow-xs font-bold cursor-pointer text-xs flex items-center gap-1.5"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Formuler avec mes Tubes</span>
+          </Button>
+
           <Button
             onClick={triggerScan}
             disabled={isScanning}
-            className="bg-[#20242B] hover:bg-[#20242B]/90 text-white shadow-xs font-semibold cursor-pointer"
+            variant="outline"
+            className="border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50 shadow-xs font-semibold cursor-pointer text-xs"
           >
-            <Scan className={`w-4 h-4 mr-2 text-[#D99A55] ${isScanning ? 'animate-spin' : ''}`} />
+            <Scan className={`w-4 h-4 mr-1.5 text-[#D99A55] ${isScanning ? 'animate-spin' : ''}`} />
             {isScanning ? 'Scan en cours...' : 'Scan Optique Rapide'}
           </Button>
         </div>
@@ -331,40 +359,75 @@ export default function ColorStudioPage() {
 
       {/* Main 2-Column Studio Grid */}
       <div className="grid lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT COLUMN: Smart Palette Simulator or Digital Sliders */}
-        <div className="lg:col-span-5 space-y-4">
+        {/* LEFT COLUMN: Reverse Calculator, Smart Palette Simulator, or Digital Sliders */}
+        <div className="lg:col-span-6 space-y-4">
           {/* Mode Switcher Tabs */}
           <div className="flex items-center p-1 bg-[#EBE8E0] rounded-2xl border border-[#D8D2C4]">
             <button
               type="button"
+              onClick={() => setStudioMode('reverse')}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                studioMode === 'reverse'
+                  ? 'bg-white text-[#20242B] shadow-xs'
+                  : 'text-zinc-600 hover:text-zinc-900'
+              }`}
+            >
+              <Sparkles className={`w-3.5 h-3.5 shrink-0 ${studioMode === 'reverse' ? 'text-[#D99A55]' : ''}`} />
+              <span className="hidden sm:inline">Recette Auto (Vos Tubes)</span>
+              <span className="sm:hidden">Recette Auto</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setStudioMode('palette')}
-              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-2 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 studioMode === 'palette'
                   ? 'bg-white text-[#20242B] shadow-xs'
                   : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
               <Cpu className={`w-3.5 h-3.5 shrink-0 ${studioMode === 'palette' ? 'text-teal-600' : ''}`} />
-              <span className="hidden sm:inline">Palette Intelligente (Capteur)</span>
-              <span className="sm:hidden">Palette Capteur</span>
+              <span className="hidden sm:inline">Palette Capteur</span>
+              <span className="sm:hidden">Palette</span>
             </button>
 
             <button
               type="button"
               onClick={() => setStudioMode('digital')}
-              className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-2 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 studioMode === 'digital'
                   ? 'bg-white text-[#20242B] shadow-xs'
                   : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
               <Sliders className={`w-3.5 h-3.5 shrink-0 ${studioMode === 'digital' ? 'text-[#D99A55]' : ''}`} />
-              <span className="hidden sm:inline">Ajustement Numérique (RGB)</span>
-              <span className="sm:hidden">Sliders RGB</span>
+              <span className="hidden sm:inline">Sliders RGB</span>
+              <span className="sm:hidden">Sliders</span>
             </button>
           </div>
 
-          {/* Mode 1: Interactive Smart Palette Simulator (from uploaded design) */}
+          {/* Mode 1: Automated Reverse Recipe Calculator (User selects tubes -> AI outputs % recipe) */}
+          {studioMode === 'reverse' && (
+            <ReverseRecipeCalculator
+              targetColor={{
+                id: savedColor?.id,
+                name: colorName,
+                hex,
+                category,
+              }}
+              savedColors={savedColors}
+              onSelectColor={(sc) => {
+                setHex(sc.hex)
+                setColorName(sc.name)
+                setCategory(sc.category || 'Peinture')
+                const rgbParsed = hexToRgb(sc.hex)
+                if (rgbParsed) setRgb(rgbParsed)
+              }}
+              onRecipeSaved={() => toast.success('Recette archivée dans votre carnet !')}
+            />
+          )}
+
+          {/* Mode 2: Interactive Smart Palette Simulator (from uploaded design) */}
           {studioMode === 'palette' && (
             <SmartPaletteSimulator
               onMeasureColor={handlePaletteMeasure}
@@ -498,7 +561,7 @@ export default function ColorStudioPage() {
         </div>
 
         {/* RIGHT COLUMN: Large Visual Swatch, Save Color & Recipe Builder */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-6 space-y-6">
           {/* Main Visual Color Swatch */}
           <Card className="border border-[#E5E3DC] bg-white shadow-xs overflow-hidden">
             <div
@@ -762,6 +825,27 @@ export default function ColorStudioPage() {
           </Card>
         </div>
       </div>
+
+      {/* Reverse Recipe Modal */}
+      <ReverseRecipeModal
+        isOpen={isReverseModalOpen}
+        onClose={() => setIsReverseModalOpen(false)}
+        targetColor={{
+          id: savedColor?.id,
+          name: colorName,
+          hex,
+          category,
+        }}
+        savedColors={savedColors}
+        onSelectAnotherColor={(sc) => {
+          setHex(sc.hex)
+          setColorName(sc.name)
+          setCategory(sc.category || 'Peinture')
+          const rgbParsed = hexToRgb(sc.hex)
+          if (rgbParsed) setRgb(rgbParsed)
+        }}
+        onRecipeSaved={() => toast.success('Recette enregistrée dans votre carnet.')}
+      />
     </div>
   )
 }
