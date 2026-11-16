@@ -322,7 +322,11 @@ export default function ColorsPage() {
       {/* Color Detail Dialog */}
       <Dialog open={!!selectedColor} onOpenChange={(open) => !open && setSelectedColor(null)}>
         {selectedColor && (
-          <DialogContent className="max-w-md bg-white p-0 overflow-hidden border border-[#E5E3DC]">
+          <DialogContent
+            showCloseButton={false}
+            className="w-[94vw] sm:max-w-lg md:max-w-xl bg-white p-0 overflow-hidden rounded-3xl border border-[#E5E3DC] shadow-2xl"
+          >
+            {/* Header Swatch */}
             <div
               className="h-44 w-full p-6 flex flex-col justify-between"
               style={{ backgroundColor: selectedColor.hex }}
@@ -338,14 +342,34 @@ export default function ColorsPage() {
                   {selectedColor.category}
                 </span>
 
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={(e) => toggleFavorite(e, selectedColor.id)}
-                  style={{ color: getContrastColor(selectedColor.hex) }}
-                >
-                  <Bookmark className={`w-4 h-4 ${selectedColor.isFavorite ? 'fill-current text-[#D99A55]' : ''}`} />
-                </Button>
+                {/* Right controls: Bookmark & Clean Close button with no collision */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={(e) => toggleFavorite(e, selectedColor.id)}
+                    className="p-2 rounded-xl backdrop-blur-md transition-all hover:scale-105 cursor-pointer shadow-xs"
+                    style={{
+                      backgroundColor: getContrastColor(selectedColor.hex) === '#FFFFFF' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)',
+                      color: getContrastColor(selectedColor.hex),
+                    }}
+                    title={selectedColor.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  >
+                    <Bookmark className={`w-4 h-4 ${selectedColor.isFavorite ? 'fill-current text-[#D99A55]' : ''}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedColor(null)}
+                    className="p-2 rounded-xl backdrop-blur-md transition-all hover:scale-105 cursor-pointer shadow-xs"
+                    style={{
+                      backgroundColor: getContrastColor(selectedColor.hex) === '#FFFFFF' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)',
+                      color: getContrastColor(selectedColor.hex),
+                    }}
+                    title="Fermer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -364,19 +388,20 @@ export default function ColorsPage() {
               </div>
             </div>
 
-            <div className="p-6 space-y-4 text-xs">
-              <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-zinc-50 border border-zinc-100 text-center font-mono">
-                <div>
-                  <span className="block text-[10px] text-zinc-400 font-sans uppercase">Rouge</span>
-                  <span className="font-bold text-sm text-zinc-800">{selectedColor.red}</span>
+            {/* Body Info */}
+            <div className="p-5 sm:p-6 space-y-4 text-xs">
+              <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-zinc-50 border border-zinc-100 text-center font-mono">
+                <div className="p-1">
+                  <span className="block text-[10px] text-zinc-400 font-sans uppercase font-bold tracking-wider">Rouge</span>
+                  <span className="font-extrabold text-base text-zinc-800">{selectedColor.red}</span>
                 </div>
-                <div>
-                  <span className="block text-[10px] text-zinc-400 font-sans uppercase">Vert</span>
-                  <span className="font-bold text-sm text-zinc-800">{selectedColor.green}</span>
+                <div className="p-1 border-x border-zinc-200/60">
+                  <span className="block text-[10px] text-zinc-400 font-sans uppercase font-bold tracking-wider">Vert</span>
+                  <span className="font-extrabold text-base text-zinc-800">{selectedColor.green}</span>
                 </div>
-                <div>
-                  <span className="block text-[10px] text-zinc-400 font-sans uppercase">Bleu</span>
-                  <span className="font-bold text-sm text-zinc-800">{selectedColor.blue}</span>
+                <div className="p-1">
+                  <span className="block text-[10px] text-zinc-400 font-sans uppercase font-bold tracking-wider">Bleu</span>
+                  <span className="font-extrabold text-base text-zinc-800">{selectedColor.blue}</span>
                 </div>
               </div>
 
@@ -406,23 +431,24 @@ export default function ColorsPage() {
               </div>
             </div>
 
-            <DialogFooter className="p-4 bg-zinc-50 border-t border-zinc-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            {/* Footer Actions (Clean layout, delete on left, primary CTA on right) */}
+            <div className="p-4 sm:p-5 bg-zinc-50 border-t border-zinc-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <Button
-                variant="destructive"
+                variant="ghost"
                 size="sm"
                 onClick={() => handleDeleteColor(selectedColor.id)}
-                className="text-xs"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs justify-center"
               >
-                <Trash2 className="w-3.5 h-3.5 mr-1" />
+                <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                 Supprimer
               </Button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <Button
                   size="sm"
                   onClick={() => setSelectedColor(null)}
                   variant="outline"
-                  className="text-xs"
+                  className="border-zinc-300 text-zinc-700 hover:bg-white text-xs h-9 px-4"
                 >
                   Fermer
                 </Button>
@@ -434,13 +460,13 @@ export default function ColorsPage() {
                     setSelectedColor(null)
                     setRecipeModalColor(target)
                   }}
-                  className="bg-[#D99A55] hover:bg-[#C4873D] text-white text-xs font-bold shadow-xs flex items-center gap-1.5"
+                  className="bg-[#D99A55] hover:bg-[#C4873D] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 h-9 px-4"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   Calculer la recette avec mes tubes
                 </Button>
               </div>
-            </DialogFooter>
+            </div>
           </DialogContent>
         )}
       </Dialog>
